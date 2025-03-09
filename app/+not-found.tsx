@@ -1,8 +1,13 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 
 export default function NotFoundScreen() {
-  return <></>;
+  return (
+    <>
+      <View style={styles.container}></View>
+      <Link href="/">홈으로</Link>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
