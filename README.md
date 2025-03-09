@@ -1,50 +1,37 @@
-# Welcome to your Expo app 👋
+# React Native App 만들기
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+## Node.js 설치
 
-1. Install dependencies
+1. nvm 설치
 
-   ```bash
-   npm install
-   ```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
-2. Start the app
+2. nvm 스크립트 파일 불러오기
 
-   ```bash
-    npx expo start
-   ```
+source "$HOME/.nvm/nvm.sh"
 
-In the output, you'll find options to open the app in a
+3. Node.js 설치
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+nvm install 22
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+4. Node.js 버전 확인
 
-## Get a fresh project
+node -v
 
-When you're ready, run:
+5. npm 버전 확인
 
-```bash
-npm run reset-project
-```
+npm -v
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 프로젝트 생성하기
 
-To learn more about developing your project with Expo, look at the following resources:
+1. npx create-expo-app@latest App-name
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+2. cd App-name
 
-## Join the community
+3. npx expo login
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+4. npx expo start
