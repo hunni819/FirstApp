@@ -1,7 +1,5 @@
 # React Native App 만들기
 
----
-
 ## Node.js 설치
 
 1. nvm 설치
@@ -23,8 +21,6 @@ node -v
 5. npm 버전 확인
 
 npm -v
-
----
 
 ## 프로젝트 생성하기
 
