@@ -1,5 +1,7 @@
 import { Link } from 'expo-router';
 import { StyleSheet, Text, View, Button, Vibration } from 'react-native';
+import Header from './components/header';
+import Footer from './components/footer';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,16 +26,20 @@ const PATTERN = 1000; // ms
 
 export default function Index() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home Screen</Text>
-      <Link style={styles.link} href="/about">
-        상세보기
-      </Link>
+    <>
+      <Header />
+      <View style={styles.container}>
+        <Text style={styles.text}>Main Screen</Text>
+        <Link style={styles.link} href="/about">
+          상세보기
+        </Link>
 
-      <Button
-        title="Click Me"
-        onPress={() => Vibration.vibrate(PATTERN, true)}
-      />
-    </View>
+        <Button
+          title="Click Me"
+          onPress={() => Vibration.vibrate(PATTERN, true)}
+        />
+      </View>
+      <Footer />
+    </>
   );
 }

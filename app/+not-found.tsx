@@ -1,15 +1,6 @@
 import { Link } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-export default function NotFoundScreen() {
-  return (
-    <>
-      <View style={styles.container}></View>
-      <Link href="/">홈으로</Link>
-    </>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,3 +13,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
 });
+
+export default function NotFoundScreen() {
+  return (
+    <>
+      <View style={styles.container}></View>
+      <Link href="/">홈으로</Link>
+    </>
+  );
+}
