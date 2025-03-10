@@ -1,6 +1,16 @@
-import { ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Button,
+  Linking,
+} from 'react-native';
+import * as Location from 'expo-location';
 import Header from './components/header';
 import Footer from './components/footer';
+import { useEffect, useState } from 'react';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -39,7 +49,42 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Index() {
+const App = () => {
+  const [location, setLocation] = useState<Location.LocationObject>();
+  const [ok, setOk] = useState<boolean>(false);
+
+  const ask = async () => {
+    await permissionLocation();
+
+    let location = await Location.getCurrentPositionAsync({ accuracy: 5 });
+    console.log(location);
+    setLocation(location);
+  };
+
+  const permissionLocation = async () => {
+    let { granted } = await Location.requestForegroundPermissionsAsync();
+
+    if (!granted) {
+      setOk(false);
+      return;
+    }
+  };
+
+  const reAsk = async () => {
+    if (!ok) {
+      openSettings();
+      return;
+    }
+  };
+
+  const openSettings = () => {
+    Linking.openSettings();
+  };
+
+  useEffect(() => {
+    ask();
+  }, []);
+
   return (
     <>
       <View style={styles.container}>
@@ -47,6 +92,7 @@ export default function Index() {
         <View style={styles.main}>
           <View style={styles.city}>
             <Text style={styles.cityName}>City</Text>
+            <Button title={'앱에서 권한 변경'} onPress={reAsk} />
           </View>
           <ScrollView
             showsHorizontalScrollIndicator={false}
@@ -76,4 +122,6 @@ export default function Index() {
       </View>
     </>
   );
-}
+};
+
+export default App;

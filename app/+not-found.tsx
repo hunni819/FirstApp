@@ -14,11 +14,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function NotFoundScreen() {
+const NotFoundScreen = () => {
   return (
     <>
       <View style={styles.container}></View>
       <Link href="/">홈으로</Link>
     </>
   );
-}
+};
+
+export default NotFoundScreen;

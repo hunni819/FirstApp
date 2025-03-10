@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function about() {
+const About = () => {
   return (
     <View style={styles.container}>
       <Link style={styles.link} href="/">
@@ -21,4 +21,6 @@ export default function about() {
       </Link>
     </View>
   );
-}
+};
+
+export default About;
