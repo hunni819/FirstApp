@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#25292e',
+  },
+  main: {
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -27,19 +30,21 @@ const PATTERN = 1000; // ms
 export default function Index() {
   return (
     <>
-      <Header />
       <View style={styles.container}>
-        <Text style={styles.text}>Main Screen</Text>
-        <Link style={styles.link} href="/about">
-          상세보기
-        </Link>
+        <Header />
+        <View style={styles.main}>
+          <Text style={styles.text}>Main Screen</Text>
+          <Link style={styles.link} href="/about">
+            상세보기
+          </Link>
 
-        <Button
-          title="Click Me"
-          onPress={() => Vibration.vibrate(PATTERN, true)}
-        />
+          <Button
+            title="Click Me"
+            onPress={() => Vibration.vibrate(PATTERN, true)}
+          />
+        </View>
+        <Footer />
       </View>
-      <Footer />
     </>
   );
 }
