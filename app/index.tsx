@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
-  const [city, setCity] = useState<cityInfoType>(cityInfo);
-  const [location, setLocation] = useState<Location.LocationObject>();
+  const [city, setCity] = useState<cityInfoType | null>(cityInfo);
+  const [location, setLocation] = useState<Location.LocationObject | null>();
   const [ok, setOk] = useState<boolean>(false);
 
   const ask = async () => {
@@ -113,8 +113,8 @@ const App = () => {
         <Header />
         <View style={styles.main}>
           <View style={styles.city}>
-            <Text style={styles.cityName}>{city.city}</Text>
-            <Text style={styles.district}>{city.district}</Text>
+            <Text style={styles.cityName}>{city?.city}</Text>
+            <Text style={styles.district}>{city?.district}</Text>
             <Button title={'앱에서 권한 변경'} onPress={reAsk} />
           </View>
           <ScrollView
