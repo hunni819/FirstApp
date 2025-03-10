@@ -1,7 +1,8 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View, Button, Vibration } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Header from './components/header';
 import Footer from './components/footer';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -9,23 +10,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#25292e',
   },
   main: {
-    flex: 3,
+    flex: 6,
+  },
+  city: {
+    flex: 1.2,
+    backgroundColor: '#dddddd',
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  cityName: {
+    fontSize: 30,
+    fontWeight: '600',
+  },
+  weather: {
+    backgroundColor: '#dddddd',
+  },
+  day: {
+    width: SCREEN_WIDTH,
     alignItems: 'center',
   },
-  text: {
-    fontSize: 48,
+  temp: {
+    fontSize: 168,
+    marginTop: 20,
   },
-  button: {
-    fontSize: 20,
-  },
-  link: {
-    fontSize: 30,
-    color: '#FFFFFF',
+  description: {
+    fontSize: 60,
+    marginTop: -30,
   },
 });
-
-const PATTERN = 1000; // ms
 
 export default function Index() {
   return (
@@ -33,15 +45,32 @@ export default function Index() {
       <View style={styles.container}>
         <Header />
         <View style={styles.main}>
-          <Text style={styles.text}>Main Screen</Text>
-          <Link style={styles.link} href="/about">
-            상세보기
-          </Link>
-
-          <Button
-            title="Click Me"
-            onPress={() => Vibration.vibrate(PATTERN, true)}
-          />
+          <View style={styles.city}>
+            <Text style={styles.cityName}>City</Text>
+          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+            horizontal
+            contentContainerStyle={styles.weather}
+          >
+            <View style={styles.day}>
+              <Text style={styles.temp}>27</Text>
+              <Text style={styles.description}>Sunny</Text>
+            </View>
+            <View style={styles.day}>
+              <Text style={styles.temp}>27</Text>
+              <Text style={styles.description}>Sunny</Text>
+            </View>
+            <View style={styles.day}>
+              <Text style={styles.temp}>27</Text>
+              <Text style={styles.description}>Sunny</Text>
+            </View>
+            <View style={styles.day}>
+              <Text style={styles.temp}>27</Text>
+              <Text style={styles.description}>Sunny</Text>
+            </View>
+          </ScrollView>
         </View>
         <Footer />
       </View>
