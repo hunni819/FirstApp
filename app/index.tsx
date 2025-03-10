@@ -12,6 +12,16 @@ import Header from './components/header';
 import Footer from './components/footer';
 import { useEffect, useState } from 'react';
 
+type cityInfoType = {
+  city: string | null;
+  district: string | null;
+};
+
+const cityInfo: cityInfoType = {
+  city: '...Loading',
+  district: '...Loading',
+};
+
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -29,6 +39,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cityName: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  district: {
     fontSize: 30,
     fontWeight: '600',
   },
@@ -50,15 +64,23 @@ const styles = StyleSheet.create({
 });
 
 const App = () => {
+  const [city, setCity] = useState<cityInfoType>(cityInfo);
   const [location, setLocation] = useState<Location.LocationObject>();
   const [ok, setOk] = useState<boolean>(false);
 
   const ask = async () => {
     await permissionLocation();
 
-    let location = await Location.getCurrentPositionAsync({ accuracy: 5 });
-    console.log(location);
-    setLocation(location);
+    const {
+      coords: { latitude, longitude },
+    } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+
+    // reverse Geocoding : 지리적 좌표로 설명된 위치를 사람이 읽을 수 있는 주소 또는 장소 이름으로 변환하는 프로세스
+    const location = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
+    setCity({ city: location[0].city, district: location[0].district });
   };
 
   const permissionLocation = async () => {
@@ -91,7 +113,8 @@ const App = () => {
         <Header />
         <View style={styles.main}>
           <View style={styles.city}>
-            <Text style={styles.cityName}>City</Text>
+            <Text style={styles.cityName}>{city.city}</Text>
+            <Text style={styles.district}>{city.district}</Text>
             <Button title={'앱에서 권한 변경'} onPress={reAsk} />
           </View>
           <ScrollView
