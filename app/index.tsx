@@ -65,46 +65,6 @@ type listType = {
   dt_txt: string;
 };
 
-// const defaultList = {
-//   dt: 1661871600,
-//   main: {
-//     temp: 296.76,
-//     feels_like: 296.98,
-//     temp_min: 296.76,
-//     temp_max: 297.87,
-//     pressure: 1015,
-//     sea_level: 1015,
-//     grnd_level: 933,
-//     humidity: 69,
-//     temp_kf: -1.11,
-//   },
-//   weather: [
-//     {
-//       id: 500,
-//       main: 'Rain',
-//       description: 'light rain',
-//       icon: '10d',
-//     },
-//   ],
-//   clouds: {
-//     all: 100,
-//   },
-//   wind: {
-//     speed: 0.62,
-//     deg: 349,
-//     gust: 1.18,
-//   },
-//   visibility: 10000,
-//   pop: 0.32,
-//   rain: {
-//     '3h': 0.26,
-//   },
-//   sys: {
-//     pod: 'd',
-//   },
-//   dt_txt: '2022-08-30 15:00:00',
-// };
-
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const WEATHER_API_KEY = 'api key';
 
@@ -145,6 +105,9 @@ const styles = StyleSheet.create({
     fontSize: 60,
     marginTop: -30,
   },
+  tinyText: {
+    fontSize: 20,
+  },
 });
 
 const App = () => {
@@ -153,7 +116,7 @@ const App = () => {
   const [ok, setOk] = useState<boolean>(false);
   const [lists, setLists] = useState<listType[]>([]);
 
-  const ask = async () => {
+  const getWeather = async () => {
     await permissionLocation();
 
     const {
@@ -171,18 +134,16 @@ const App = () => {
     setCity({ city: location[0].city, district: location[0].district });
 
     const request = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`
     );
 
     const response = await request.json();
-    console.log(response);
 
     const convertKTCList = response.list.filter(
       ({ dt_txt }: { dt_txt: string }) => {
         const date = new Date(dt_txt);
         // KTC
         date.setHours(date.getHours() + 9);
-
         return {};
       }
     );
@@ -210,7 +171,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    ask();
+    getWeather();
   }, []);
 
   return (
@@ -234,12 +195,11 @@ const App = () => {
                 <ActivityIndicator color="white" size="large" />
               </View>
             ) : (
-              lists.map((list) => (
-                <View style={styles.day}>
-                  <Text style={styles.temp}>
-                    {Number(list.main.temp - 273).toFixed(1)}
-                  </Text>
-                  <Text style={styles.description}>
+              lists.map((list, index) => (
+                <View key={index} style={styles.day}>
+                  <Text style={styles.temp}>{list.main.temp.toFixed(1)}</Text>
+                  <Text style={styles.description}>{list.weather[0].main}</Text>
+                  <Text style={styles.tinyText}>
                     {list.weather[0].description}
                   </Text>
                 </View>
