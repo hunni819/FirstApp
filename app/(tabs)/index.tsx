@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 // import { WeekperWeather } from './apis/weather';
 import { locationInfo } from '../types/location';
 import { ErrorBoundary } from 'expo-router';
+import { Try } from 'expo-router/build/views/Try';
 // import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
 type cityInfoType = {
@@ -153,40 +154,43 @@ const App = () => {
   const [lists, setLists] = useState<listType[]>([]);
 
   const getWeather = async () => {
-    await permissionLocation();
+    try {
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync({ accuracy: 5 });
 
-    const {
-      coords: { latitude, longitude },
-    } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+      await permissionLocation();
+      setLocation({ lat: latitude, lng: longitude });
 
-    setLocation({ lat: latitude, lng: longitude });
+      // reverse Geocoding : 지리적 좌표로 설명된 위치를 사람이 읽을 수 있는 주소 또는 장소 이름으로 변환하는 프로세스
+      const location = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
 
-    // reverse Geocoding : 지리적 좌표로 설명된 위치를 사람이 읽을 수 있는 주소 또는 장소 이름으로 변환하는 프로세스
-    const location = await Location.reverseGeocodeAsync({
-      latitude,
-      longitude,
-    });
+      setCity({ city: location[0].city, district: location[0].district });
 
-    setCity({ city: location[0].city, district: location[0].district });
+      const request = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`
+      );
 
-    const request = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`
-    );
+      const response = await request.json();
 
-    const response = await request.json();
+      const convertKTCList = response.list.map((ls: listType) => {
+        const date = new Date(ls.dt_txt);
+        date.setHours(date.getHours() + 9);
 
-    const convertKTCList = response.list.map((ls: listType) => {
-      const date = new Date(ls.dt_txt);
-      date.setHours(date.getHours() + 9);
+        const targetDate = date.toISOString().split('.')[0];
 
-      const targetDate = date.toISOString().split('.')[0];
+        const hour = targetDate.split('T')[1];
+        const today = targetDate.split('T')[0];
 
-      const hour = targetDate.split('T')[1];
-      const today = targetDate.split('T')[0];
-
-      return { ...ls, dt_txt: `${today} ${hour}` };
-    });
-    setLists(convertKTCList);
+        return { ...ls, dt_txt: `${today} ${hour}` };
+      });
+      setLists(convertKTCList);
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+    }
   };
 
   const permissionLocation = async () => {

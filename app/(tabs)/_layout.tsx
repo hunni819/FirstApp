@@ -3,11 +3,10 @@ import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
 import { ErrorBoundary } from '../components/errorBoundary';
-import { Try } from 'expo-router/build/views/Try';
 
 const TabLayout = () => {
   return (
-    <Try catch={ErrorBoundary}>
+    <ErrorBoundary>
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
         <Tabs.Screen
           name="index"
@@ -37,7 +36,7 @@ const TabLayout = () => {
           }}
         />
       </Tabs>
-    </Try>
+    </ErrorBoundary>
   );
 };
 
