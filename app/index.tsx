@@ -139,14 +139,17 @@ const App = () => {
 
     const response = await request.json();
 
-    const convertKTCList = response.list.filter(
-      ({ dt_txt }: { dt_txt: string }) => {
-        const date = new Date(dt_txt);
-        // KTC
-        date.setHours(date.getHours() + 9);
-        return {};
-      }
-    );
+    const convertKTCList = response.list.map((ls: listType) => {
+      const date = new Date(ls.dt_txt);
+      date.setHours(date.getHours() + 9);
+
+      const targetDate = date.toISOString().split('.')[0];
+
+      const hour = targetDate.split('T')[1];
+      const today = targetDate.split('T')[0];
+
+      return { ...ls, dt_txt: `${today} ${hour}` };
+    });
     setLists(convertKTCList);
   };
 
@@ -182,6 +185,7 @@ const App = () => {
           <View style={styles.city}>
             <Text style={styles.cityName}>{city?.city}</Text>
             <Text style={styles.district}>{city?.district}</Text>
+            <Text>{}</Text>
             <Button title={'앱에서 권한 변경'} onPress={reAsk} />
           </View>
           <ScrollView
@@ -202,6 +206,7 @@ const App = () => {
                   <Text style={styles.tinyText}>
                     {list.weather[0].description}
                   </Text>
+                  <Text style={styles.tinyText}>{list.dt_txt}</Text>
                 </View>
               ))
             )}
