@@ -19,6 +19,9 @@ const About = () => {
       <Link style={styles.link} href="/">
         홈으로 가기
       </Link>
+      <Link style={styles.link} href="/+not-found">
+        에러
+      </Link>
     </View>
   );
 };

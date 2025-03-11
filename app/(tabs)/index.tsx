@@ -16,6 +16,7 @@ import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
 // import { WeekperWeather } from './apis/weather';
 import { locationInfo } from '../types/location';
+import { ErrorBoundary } from 'expo-router';
 // import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
 type cityInfoType = {
