@@ -8,12 +8,15 @@ import {
   Linking,
   ActivityIndicator,
 } from 'react-native';
+import Fontisto from '@expo/vector-icons/Fontisto';
+
 import * as Location from 'expo-location';
 import Header from './components/header';
 import Footer from './components/footer';
 import { useEffect, useState } from 'react';
 // import { WeekperWeather } from './apis/weather';
 import { locationInfo } from './types/location';
+// import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
 type cityInfoType = {
   city: string | null;
@@ -95,20 +98,37 @@ const styles = StyleSheet.create({
   },
   day: {
     width: SCREEN_WIDTH,
-    alignItems: 'center',
+    padding: 50,
   },
   temp: {
-    fontSize: 168,
+    fontSize: 128,
     marginTop: 20,
   },
   description: {
-    fontSize: 60,
-    marginTop: -30,
+    fontSize: 24,
+    marginTop: -15,
   },
   tinyText: {
-    fontSize: 20,
+    fontSize: 14,
+  },
+  forcast: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
+
+type IconType<G extends string> = {
+  [key: string]: G;
+};
+
+type G = 'cloudy' | 'day-sunny' | 'rain' | 'snow';
+
+const icons: IconType<G> = {
+  Clouds: 'cloudy',
+  Clear: 'day-sunny',
+  Rain: 'rain',
+  Snow: 'snow',
+};
 
 const App = () => {
   const [city, setCity] = useState<cityInfoType | null>(cityInfo);
@@ -185,7 +205,6 @@ const App = () => {
           <View style={styles.city}>
             <Text style={styles.cityName}>{city?.city}</Text>
             <Text style={styles.district}>{city?.district}</Text>
-            <Text>{}</Text>
             <Button title={'앱에서 권한 변경'} onPress={reAsk} />
           </View>
           <ScrollView
@@ -201,7 +220,17 @@ const App = () => {
             ) : (
               lists.map((list, index) => (
                 <View key={index} style={styles.day}>
-                  <Text style={styles.temp}>{list.main.temp.toFixed(1)}</Text>
+                  <View style={styles.forcast}>
+                    <Text style={styles.temp}>
+                      {Math.round(list.main.temp)}
+                    </Text>
+                    <Fontisto
+                      name={icons[list.weather[0].main]}
+                      size={68}
+                      color="black"
+                    />
+                  </View>
+
                   <Text style={styles.description}>{list.weather[0].main}</Text>
                   <Text style={styles.tinyText}>
                     {list.weather[0].description}
