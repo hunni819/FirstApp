@@ -11,11 +11,11 @@ import {
 import Fontisto from '@expo/vector-icons/Fontisto';
 
 import * as Location from 'expo-location';
-import Header from './components/header';
-import Footer from './components/footer';
+import Header from '../components/header';
+import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
 // import { WeekperWeather } from './apis/weather';
-import { locationInfo } from './types/location';
+import { locationInfo } from '../types/location';
 // import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
 type cityInfoType = {
@@ -47,7 +47,7 @@ type listType = {
       main: string;
       description: string;
       icon: string;
-    }
+    },
   ];
   clouds: {
     all: number;
@@ -98,7 +98,21 @@ const styles = StyleSheet.create({
   },
   day: {
     width: SCREEN_WIDTH,
-    padding: 50,
+    paddingLeft: 50,
+    paddingRight: 50,
+  },
+  info: {
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 10,
+  },
+  today: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  hour: {
+    fontSize: 24,
   },
   temp: {
     fontSize: 128,
@@ -112,6 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   forcast: {
+    marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -220,6 +235,16 @@ const App = () => {
             ) : (
               lists.map((list, index) => (
                 <View key={index} style={styles.day}>
+                  <View style={styles.info}>
+                    <Text style={styles.today}>
+                      {list.dt_txt.split(' ')[0]}
+                    </Text>
+
+                    <Text style={styles.hour}>
+                      {list.dt_txt.split(' ')[1].slice(0, 5)}
+                    </Text>
+                  </View>
+
                   <View style={styles.forcast}>
                     <Text style={styles.temp}>
                       {Math.round(list.main.temp)}
@@ -235,7 +260,6 @@ const App = () => {
                   <Text style={styles.tinyText}>
                     {list.weather[0].description}
                   </Text>
-                  <Text style={styles.tinyText}>{list.dt_txt}</Text>
                 </View>
               ))
             )}

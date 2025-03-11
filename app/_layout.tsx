@@ -5,9 +5,8 @@ const RootLayout = () => {
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" options={{ title: 'index' }} />
-        <Stack.Screen name="about" options={{ title: 'about' }} />
-        <Stack.Screen name="+not-found" options={{ title: 'Not-founded' }} />
+        <Stack.Screen name="+not-found" options={{ title: 'not-found' }} />
+        <Stack.Screen name="(tabs)" />
       </Stack>
       <StatusBar style="light" />
     </>
