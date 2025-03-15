@@ -1,4 +1,4 @@
-import { router, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
@@ -26,15 +26,6 @@ const TabLayout = () => {
             tabBarIcon: ({ color }) => (
               <FontAwesome name="home" size={24} color={color} />
             ),
-            headerLeft: () => (
-              <FontAwesome
-                style={styles.leftArrow}
-                name="arrow-circle-left"
-                size={24}
-                color="black"
-                onPress={() => router.dismissTo('/(tabs)')}
-              />
-            ),
           }}
         />
         <Tabs.Screen
@@ -44,15 +35,6 @@ const TabLayout = () => {
             tabBarIcon: ({ color }) => (
               <FontAwesome name="newspaper-o" size={24} color={color} />
             ),
-            headerLeft: () => (
-              <FontAwesome
-                style={styles.leftArrow}
-                name="arrow-circle-left"
-                size={24}
-                color="black"
-                onPress={() => router.dismissTo('/(tabs)')}
-              />
-            ),
           }}
         />
         <Tabs.Screen
@@ -61,15 +43,6 @@ const TabLayout = () => {
             title: '설정',
             tabBarIcon: ({ color }) => (
               <Feather name="settings" size={24} color={color} />
-            ),
-            headerLeft: () => (
-              <FontAwesome
-                style={styles.leftArrow}
-                name="arrow-circle-left"
-                size={24}
-                color="black"
-                onPress={() => router.dismissTo('/(tabs)')}
-              />
             ),
           }}
         />
