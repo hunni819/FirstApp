@@ -71,7 +71,7 @@ type listType = {
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const WEATHER_API_KEY = '2d83673156f402726d448836a49eec1a';
+const WEATHER_API_KEY = 'api key';
 
 const styles = StyleSheet.create({
   container: {

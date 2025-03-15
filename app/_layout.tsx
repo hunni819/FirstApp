@@ -10,7 +10,8 @@ const RootLayout = () => {
           <Stack.Screen name="+not-found" options={{ title: 'not-found' }} />
           <Stack.Screen name="(tabs)" options={{ title: 'tab' }} />
         </Stack>
-        <StatusBar style="dark" />
+
+        <StatusBar style="light" />
       </ErrorBoundary>
     </>
   );
