@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Switch } from 'react-native';
+import { StyleSheet, View, Text, Switch, Linking } from 'react-native';
 import { theme } from '../types/color';
 import { useNavigation } from 'expo-router';
+
+import * as Notifications from 'expo-notifications';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,12 +39,61 @@ const styles = StyleSheet.create({
   },
 });
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 const Settings = () => {
   const navigation = useNavigation();
+  const [ok, setOk] = useState<boolean>(true);
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
+
+  const sendNotification = async () => {
+    await permissionAlarm();
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '알림 제목',
+        body: '알림 내용',
+      },
+      trigger: null,
+    });
+  };
+
+  const permissionAlarm = async () => {
+    const { granted } = await Notifications.requestPermissionsAsync();
+
+    if (!granted) {
+      setOk(false);
+      throw new Error('알림 권한을 허용해주세요');
+      // reAsk();
+    }
+  };
+
+  const reAsk = async () => {
+    if (!ok) {
+      openSettings();
+      return;
+    }
+  };
+
+  const openSettings = () => {
+    Linking.openSettings();
+  };
 
   useEffect(() => {
     navigation.setOptions({});
+    sendNotification();
+
+    (async () => {
+      if (!ok) {
+        await reAsk();
+      }
+    })();
   }, [navigation]);
 
   const toggleSwitch = () => setIsEnabled((prev) => !prev);

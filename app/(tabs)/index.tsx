@@ -16,8 +16,6 @@ import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
 import { locationInfo } from '../types/location';
 
-import * as Notifications from 'expo-notifications';
-
 type cityInfoType = {
   city: string | null;
   district: string | null;
@@ -145,38 +143,11 @@ const icons: IconType<G> = {
   Snow: 'snow',
 };
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
 const App = () => {
   const [city, setCity] = useState<cityInfoType | null>(cityInfo);
   const [location, setLocation] = useState(locationInfo);
-  const [ok, setOk] = useState<boolean>(false);
+  const [ok, setOk] = useState<boolean>(true);
   const [lists, setLists] = useState<listType[]>([]);
-
-  const sendNotification = async () => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '알림 제목',
-        body: '알림 내용',
-      },
-      trigger: null,
-    });
-  };
-
-  const permissionAlarm = async () => {
-    const { granted } = await Notifications.requestPermissionsAsync();
-
-    if (!granted) {
-      setOk(false);
-      throw new Error('알림 권한을 허용해주세요');
-    }
-  };
 
   const getWeather = async () => {
     try {
@@ -235,6 +206,7 @@ const App = () => {
     if (!granted) {
       setOk(false);
       throw new Error('위치 권한을 허용해주세요');
+      // reAsk();
     }
   };
 
@@ -251,8 +223,12 @@ const App = () => {
 
   useEffect(() => {
     getWeather();
-    permissionAlarm();
-    sendNotification();
+
+    (async () => {
+      if (ok) {
+        await reAsk();
+      }
+    })();
   }, []);
 
   return (
