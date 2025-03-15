@@ -1,4 +1,4 @@
-import { Tabs, router } from 'expo-router';
+import { router } from 'expo-router';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Switch } from 'react-native';
 import { theme } from '../types/color';
 import { useNavigation } from 'expo-router';
@@ -40,6 +40,10 @@ const styles = StyleSheet.create({
 const Settings = () => {
   const navigation = useNavigation();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    navigation.setOptions({});
+  }, [navigation]);
 
   const toggleSwitch = () => setIsEnabled((prev) => !prev);
 
