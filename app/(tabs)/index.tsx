@@ -159,7 +159,7 @@ const App = () => {
 
       const {
         coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+      } = await Location.getCurrentPositionAsync({ accuracy: 6 });
 
       if (!latitude && !longitude)
         throw new Error('위치 정보를 불러오지 못했어요');
