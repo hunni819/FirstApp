@@ -71,7 +71,7 @@ type listType = {
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const WEATHER_API_KEY = 'api key';
+const WEATHER_API_KEY = '2d83673156f402726d448836a49eec1a';
 
 const styles = StyleSheet.create({
   container: {
@@ -159,7 +159,7 @@ const App = () => {
 
       const {
         coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+      } = await Location.getCurrentPositionAsync({ accuracy: 6 });
 
       if (!latitude && !longitude)
         throw new Error('위치 정보를 불러오지 못했어요');
