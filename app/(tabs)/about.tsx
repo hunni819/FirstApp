@@ -2,6 +2,7 @@ import Fontisto from '@expo/vector-icons/Fontisto';
 import { useNavigation } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import ColorList from '../components/ColorList';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,7 +18,11 @@ const About = () => {
     navigation.setOptions({});
   }, [navigation]);
 
-  return <View style={styles.container}></View>;
+  return (
+    <View style={styles.container}>
+      <ColorList color="#eeff00" />
+    </View>
+  );
 };
 
 export default About;

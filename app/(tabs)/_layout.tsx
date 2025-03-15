@@ -1,13 +1,9 @@
-import { router } from 'expo-router';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { router, Tabs } from 'expo-router';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Feather from '@expo/vector-icons/Feather';
 import { ErrorBoundary } from '../components/errorBoundary';
 import { StyleSheet } from 'react-native';
-import App from '.';
-import About from './about';
-import Settings from './settings';
 
 const styles = StyleSheet.create({
   leftArrow: {
@@ -16,18 +12,15 @@ const styles = StyleSheet.create({
 });
 
 const TabLayout = () => {
-  const Tab = createBottomTabNavigator();
-
   return (
     <ErrorBoundary>
-      <Tab.Navigator
+      <Tabs
         screenOptions={{
           tabBarActiveTintColor: 'blue',
         }}
       >
-        <Tab.Screen
+        <Tabs.Screen
           name="index"
-          component={App}
           options={{
             title: 'Home',
             tabBarIcon: ({ color }) => (
@@ -39,14 +32,13 @@ const TabLayout = () => {
                 name="arrow-circle-left"
                 size={24}
                 color="black"
-                onPress={() => router.dismissAll()}
+                onPress={() => router.dismissTo('/(tabs)')}
               />
             ),
           }}
         />
-        <Tab.Screen
+        <Tabs.Screen
           name="about"
-          component={About}
           options={{
             title: 'About',
             tabBarIcon: ({ color }) => (
@@ -58,14 +50,13 @@ const TabLayout = () => {
                 name="arrow-circle-left"
                 size={24}
                 color="black"
-                onPress={() => router.dismissAll()}
+                onPress={() => router.dismissTo('/(tabs)')}
               />
             ),
           }}
         />
-        <Tab.Screen
+        <Tabs.Screen
           name="settings"
-          component={Settings}
           options={{
             title: '설정',
             tabBarIcon: ({ color }) => (
@@ -77,12 +68,12 @@ const TabLayout = () => {
                 name="arrow-circle-left"
                 size={24}
                 color="black"
-                onPress={() => router.dismissAll()}
+                onPress={() => router.dismissTo('/(tabs)')}
               />
             ),
           }}
         />
-      </Tab.Navigator>
+      </Tabs>
     </ErrorBoundary>
   );
 };

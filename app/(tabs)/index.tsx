@@ -16,7 +16,7 @@ import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
 // import { WeekperWeather } from './apis/weather';
 import { locationInfo } from '../types/location';
-import { ErrorBoundary, useNavigation } from 'expo-router';
+import { ErrorBoundary } from 'expo-router';
 import { Try } from 'expo-router/build/views/Try';
 // import { IconProps } from '@expo/vector-icons/build/createIconSet';
 
@@ -153,8 +153,6 @@ const App = () => {
   const [ok, setOk] = useState<boolean>(false);
   const [lists, setLists] = useState<listType[]>([]);
 
-  const navigation = useNavigation();
-
   const getWeather = async () => {
     try {
       await permissionLocation();
@@ -206,11 +204,6 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    getWeather();
-    navigation.setOptions({});
-  }, [navigation]);
-
   const permissionLocation = async () => {
     let { granted } = await Location.requestForegroundPermissionsAsync();
 
@@ -230,6 +223,10 @@ const App = () => {
   const openSettings = () => {
     Linking.openSettings();
   };
+
+  useEffect(() => {
+    getWeather();
+  }, []);
 
   return (
     <>
