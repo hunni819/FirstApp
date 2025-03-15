@@ -14,11 +14,9 @@ import * as Location from 'expo-location';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
-// import { WeekperWeather } from './apis/weather';
 import { locationInfo } from '../types/location';
-import { ErrorBoundary } from 'expo-router';
-import { Try } from 'expo-router/build/views/Try';
-// import { IconProps } from '@expo/vector-icons/build/createIconSet';
+
+import * as Notifications from 'expo-notifications';
 
 type cityInfoType = {
   city: string | null;
@@ -147,11 +145,38 @@ const icons: IconType<G> = {
   Snow: 'snow',
 };
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 const App = () => {
   const [city, setCity] = useState<cityInfoType | null>(cityInfo);
   const [location, setLocation] = useState(locationInfo);
   const [ok, setOk] = useState<boolean>(false);
   const [lists, setLists] = useState<listType[]>([]);
+
+  const sendNotification = async () => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '알림 제목',
+        body: '알림 내용',
+      },
+      trigger: null,
+    });
+  };
+
+  const permissionAlarm = async () => {
+    const { granted } = await Notifications.requestPermissionsAsync();
+
+    if (!granted) {
+      setOk(false);
+      throw new Error('알림 권한을 허용해주세요');
+    }
+  };
 
   const getWeather = async () => {
     try {
@@ -226,6 +251,8 @@ const App = () => {
 
   useEffect(() => {
     getWeather();
+    permissionAlarm();
+    sendNotification();
   }, []);
 
   return (

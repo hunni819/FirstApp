@@ -6,8 +6,8 @@ import { ErrorBoundary } from '../components/errorBoundary';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  leftArrow: {
-    marginLeft: 20,
+  alarm: {
+    marginRight: 20,
   },
 });
 
@@ -26,6 +26,14 @@ const TabLayout = () => {
             tabBarIcon: ({ color }) => (
               <FontAwesome name="home" size={24} color={color} />
             ),
+            headerRight: () => (
+              <FontAwesome
+                style={styles.alarm}
+                name="bell-o"
+                size={24}
+                color="black"
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -35,6 +43,14 @@ const TabLayout = () => {
             tabBarIcon: ({ color }) => (
               <FontAwesome name="newspaper-o" size={24} color={color} />
             ),
+            headerRight: () => (
+              <FontAwesome
+                style={styles.alarm}
+                name="bell-o"
+                size={24}
+                color="black"
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -43,6 +59,14 @@ const TabLayout = () => {
             title: '설정',
             tabBarIcon: ({ color }) => (
               <Feather name="settings" size={24} color={color} />
+            ),
+            headerRight: () => (
+              <FontAwesome
+                style={styles.alarm}
+                name="bell-o"
+                size={24}
+                color="black"
+              />
             ),
           }}
         />
