@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, Text, Switch } from 'react-native';
 import { theme } from '../types/color';
+import { useNavigation } from 'expo-router';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
 });
 
 const Settings = () => {
+  const navigation = useNavigation();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
   const toggleSwitch = () => setIsEnabled((prev) => !prev);
@@ -46,27 +48,17 @@ const Settings = () => {
       <View style={styles.main}>
         <View style={styles.list}>
           <View>
-            <Text style={styles.title}>날씨 접근 허용</Text>
+            <Text style={styles.title}>알림 허용</Text>
             <View style={styles.menu}>
-              <Text style={styles.name}>메뉴</Text>
+              <Text style={styles.name}>알림</Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
+                thumbColor={'#ffffff'}
+                ios_backgroundColor="#fefefe"
                 onValueChange={toggleSwitch}
                 value={isEnabled}
               />
             </View>
-          </View>
-
-          <View style={styles.menu}>
-            <Text style={styles.name}>메뉴</Text>
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.name}>메뉴</Text>
-          </View>
-          <View style={styles.menu}>
-            <Text style={styles.name}>메뉴</Text>
           </View>
         </View>
       </View>
