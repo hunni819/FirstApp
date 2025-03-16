@@ -7,14 +7,18 @@ import {
   Button,
   Linking,
   ActivityIndicator,
+  ImageBackground,
+  Image,
 } from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import Fontisto from '@expo/vector-icons/Fontisto';
 
 import * as Location from 'expo-location';
-import Header from '../components/header';
-import Footer from '../components/footer';
 import { useEffect, useState } from 'react';
 import { locationInfo } from '../types/location';
+import { WeekperWeather } from '../apis/weather';
 
 type cityInfoType = {
   city: string | null;
@@ -67,68 +71,147 @@ type listType = {
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const WEATHER_API_KEY = 'api key';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
+  },
+  bg: {
+    flex: 1,
   },
   main: {
-    flex: 6,
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 80,
+    backgroundColor: '#000',
+    opacity: 0.8,
   },
   city: {
-    flex: 1.2,
-    backgroundColor: '#dddddd',
+    flex: 1,
+    paddingVertical: 20,
+    backgroundColor: '#111',
     alignItems: 'center',
     justifyContent: 'center',
+    opacity: 0.9,
   },
   cityName: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  district: {
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  weather: {
-    backgroundColor: '#dddddd',
-  },
-  day: {
-    width: SCREEN_WIDTH,
-    paddingLeft: 50,
-    paddingRight: 50,
-  },
-  info: {
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 10,
-  },
-  today: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  hour: {
-    fontSize: 24,
+    marginTop: 2,
+    fontSize: 32,
+    color: 'white',
+    fontWeight: '400',
   },
   temp: {
-    fontSize: 128,
-    marginTop: 20,
+    fontSize: 80,
+    color: 'white',
+    fontWeight: '200',
   },
-  description: {
-    fontSize: 24,
-    marginTop: -15,
+  desc: {
+    fontSize: 22,
+    color: 'white',
   },
-  tinyText: {
-    fontSize: 14,
-  },
-  forcast: {
-    marginTop: 30,
+  temp_opt: {
+    marginTop: 5,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 10,
+  },
+  temp_high: {
+    fontSize: 18,
+    color: 'white',
+  },
+  temp_low: {
+    fontSize: 18,
+    color: 'white',
+  },
+  hourly: {
+    marginTop: 20,
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    backgroundColor: '#111',
+    opacity: 0.9,
+  },
+  hourly_desc: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: '600',
+  },
+  hourly_flexbox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  hourly_icon: {
+    width: 40,
+    height: 40,
   },
 });
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//   },
+// main: {
+//   flex: 1,
+//   paddingHorizontal: 20,
+//   paddingVertical: 100,
+//   backgroundColor: '#000000',
+//   opacity: 0.8,
+// },
+//   city: {
+//     paddingVertical: 20,
+//     backgroundColor: '#111111',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     opacity: 0.9,
+//   },
+//   cityName: {
+//     fontSize: 14,
+//     color: 'white',
+//     fontWeight: '600',
+//   },
+//   district: {
+//     marginTop: 5,
+//     fontSize: 32,
+//     color: 'white',
+//     fontWeight: '600',
+//   },
+//   weather: {},
+//   day: {
+//     width: SCREEN_WIDTH,
+//     paddingLeft: 50,
+//     paddingRight: 50,
+//   },
+//   info: {
+//     justifyContent: 'center',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//     gap: 10,
+//   },
+//   today: {
+//     fontSize: 24,
+//     fontWeight: '600',
+//   },
+//   hour: {
+//     fontSize: 24,
+//   },
+//   temp: {
+//     fontSize: 128,
+//     marginTop: 20,
+//   },
+//   description: {
+//     fontSize: 24,
+//     marginTop: -15,
+//   },
+//   tinyText: {
+//     fontSize: 14,
+//   },
+//   forcast: {
+//     marginTop: 30,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//   },
+// });
 
 type IconType<G extends string> = {
   [key: string]: G;
@@ -172,29 +255,8 @@ const App = () => {
 
       setCity({ city: location[0].city, district: location[0].district });
 
-      const request = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`
-      );
-
-      if (request.status === 200) {
-        const response = await request.json();
-
-        if (!response) throw new Error('parse에 실패했어요');
-
-        const convertKTCList = response.list.map((ls: listType) => {
-          const date = new Date(ls.dt_txt);
-          date.setHours(date.getHours() + 9);
-
-          const targetDate = date.toISOString().split('.')[0];
-
-          const hour = targetDate.split('T')[1];
-          const today = targetDate.split('T')[0];
-
-          return { ...ls, dt_txt: `${today} ${hour}` };
-        });
-        setLists(convertKTCList);
-        return;
-      }
+      const { list } = await WeekperWeather({ lat: latitude, lng: longitude });
+      setLists(list);
     } catch (e) {
       if (e instanceof Error) console.error(e.message);
     }
@@ -206,7 +268,6 @@ const App = () => {
     if (!granted) {
       setOk(false);
       throw new Error('위치 권한을 허용해주세요');
-      // reAsk();
     }
   };
 
@@ -232,15 +293,62 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <View style={styles.container}>
-        <Header />
-        <View style={styles.main}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <ImageBackground
+        source={require('../../assets/images/day-sunny.jpg')}
+        resizeMode="cover"
+        style={styles.bg}
+      >
+        <ScrollView style={styles.main}>
           <View style={styles.city}>
-            <Text style={styles.cityName}>{city?.city}</Text>
-            <Text style={styles.district}>{city?.district}</Text>
-            <Button title={'앱에서 권한 변경'} onPress={reAsk} />
+            <Text style={{ fontSize: 14, color: 'white', fontWeight: '600' }}>
+              나의 위치
+            </Text>
+            <Text style={styles.cityName}>수원시</Text>
+            <Text style={styles.temp}>13°</Text>
+            <Text style={styles.desc}>체감 온도 : 13°</Text>
+
+            <View style={styles.temp_opt}>
+              <Text style={styles.temp_high}>최고 : 13°</Text>
+              <Text style={styles.temp_low}>최저 : 13°</Text>
+            </View>
           </View>
+
+          <View style={styles.hourly}>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: '#2E2E2E',
+                paddingVertical: 10,
+              }}
+            >
+              <Text style={styles.hourly_desc}>
+                설명설명설명설명설명설명설명설명설명설명설명설명
+                설명설명설명설명설명설명설명설명설명설명설명설명
+              </Text>
+            </View>
+
+            <ScrollView
+              contentContainerStyle={{ flex: 1, gap: 30, marginTop: 10 }}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
+                <View style={styles.hourly_flexbox}>
+                  <Text style={{ color: 'white' }}>오늘</Text>
+                  <Image
+                    style={styles.hourly_icon}
+                    source={require('../../assets/images/icon.png')}
+                  />
+                  <Text style={{ color: 'white' }}>오늘</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+
+      {/* <View>
           <ScrollView
             showsHorizontalScrollIndicator={false}
             pagingEnabled
@@ -283,10 +391,8 @@ const App = () => {
               ))
             )}
           </ScrollView>
-        </View>
-        <Footer />
-      </View>
-    </>
+        </View> */}
+    </SafeAreaView>
   );
 };
 

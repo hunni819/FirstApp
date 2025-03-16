@@ -7,7 +7,8 @@ import ColorList from '../components/ColorList';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
+    paddingHorizontal: 20,
+    paddingVertical: 100,
   },
 });
 
@@ -20,7 +21,7 @@ const About = () => {
 
   return (
     <View style={styles.container}>
-      <ColorList color="#eeff00" />
+      <ColorList color="#000000" />
     </View>
   );
 };
