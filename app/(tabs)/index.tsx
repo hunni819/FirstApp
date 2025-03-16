@@ -100,14 +100,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '400',
   },
+  position: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: '600',
+  },
   temp: {
     fontSize: 80,
     color: 'white',
     fontWeight: '200',
   },
   desc: {
-    fontSize: 22,
+    fontSize: 20,
     color: 'white',
+    opacity: 0.6,
   },
   temp_opt: {
     marginTop: 5,
@@ -124,11 +130,15 @@ const styles = StyleSheet.create({
   },
   hourly: {
     marginTop: 20,
+    paddingHorizontal: 15,
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
     backgroundColor: '#111',
     opacity: 0.9,
+  },
+  hourly_desc_wrap: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#2E2E2E',
   },
   hourly_desc: {
     fontSize: 14,
@@ -136,10 +146,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   hourly_flexbox: {
+    paddingVertical: 10,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 5,
+  },
+  hourly_flat_scroll: {
+    gap: 10,
+    paddingLeft: 10,
   },
   hourly_icon: {
     width: 40,
@@ -301,49 +316,43 @@ const App = () => {
       >
         <ScrollView style={styles.main}>
           <View style={styles.city}>
-            <Text style={{ fontSize: 14, color: 'white', fontWeight: '600' }}>
-              나의 위치
-            </Text>
+            <Text style={styles.position}>나의 위치</Text>
             <Text style={styles.cityName}>수원시</Text>
             <Text style={styles.temp}>13°</Text>
-            <Text style={styles.desc}>체감 온도 : 13°</Text>
+            <Text style={styles.desc}>체감 온도:13°</Text>
 
             <View style={styles.temp_opt}>
-              <Text style={styles.temp_high}>최고 : 13°</Text>
-              <Text style={styles.temp_low}>최저 : 13°</Text>
+              <Text style={styles.temp_high}>최고:13°</Text>
+              <Text style={styles.temp_low}>최저:13°</Text>
             </View>
           </View>
 
           <View style={styles.hourly}>
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderColor: '#2E2E2E',
-                paddingVertical: 10,
-              }}
-            >
+            <View style={styles.hourly_desc_wrap}>
               <Text style={styles.hourly_desc}>
                 설명설명설명설명설명설명설명설명설명설명설명설명
                 설명설명설명설명설명설명설명설명설명설명설명설명
               </Text>
             </View>
 
-            <ScrollView
-              contentContainerStyle={{ flex: 1, gap: 30, marginTop: 10 }}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-            >
-              {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
-                <View style={styles.hourly_flexbox}>
-                  <Text style={{ color: 'white' }}>오늘</Text>
-                  <Image
-                    style={styles.hourly_icon}
-                    source={require('../../assets/images/icon.png')}
-                  />
-                  <Text style={{ color: 'white' }}>오늘</Text>
-                </View>
-              ))}
-            </ScrollView>
+            <View style={{ marginLeft: -10 }}>
+              <ScrollView
+                contentContainerStyle={styles.hourly_flat_scroll}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+              >
+                {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
+                  <View style={styles.hourly_flexbox}>
+                    <Text style={{ color: 'white' }}>오후 10시</Text>
+                    <Image
+                      style={styles.hourly_icon}
+                      source={require('../../assets/images/icon.png')}
+                    />
+                    <Text style={{ color: 'white' }}>13°</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
           </View>
         </ScrollView>
       </ImageBackground>
