@@ -4,19 +4,21 @@ import {
   Text,
   View,
   Dimensions,
-  Button,
   Linking,
   ActivityIndicator,
   ImageBackground,
   Image,
+  Animated,
+  PanResponder,
+  LayoutChangeEvent,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Fontisto from '@expo/vector-icons/Fontisto';
-
 import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { locationInfo } from '../types/location';
 import { WeekperWeather } from '../apis/weather';
 
@@ -82,12 +84,11 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 80,
+    paddingTop: 80,
     backgroundColor: '#000',
     opacity: 0.8,
   },
   city: {
-    flex: 1,
     paddingVertical: 20,
     backgroundColor: '#111',
     alignItems: 'center',
@@ -222,85 +223,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-// main: {
-//   flex: 1,
-//   paddingHorizontal: 20,
-//   paddingVertical: 100,
-//   backgroundColor: '#000000',
-//   opacity: 0.8,
-// },
-//   city: {
-//     paddingVertical: 20,
-//     backgroundColor: '#111111',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     opacity: 0.9,
-//   },
-//   cityName: {
-//     fontSize: 14,
-//     color: 'white',
-//     fontWeight: '600',
-//   },
-//   district: {
-//     marginTop: 5,
-//     fontSize: 32,
-//     color: 'white',
-//     fontWeight: '600',
-//   },
-//   weather: {},
-//   day: {
-//     width: SCREEN_WIDTH,
-//     paddingLeft: 50,
-//     paddingRight: 50,
-//   },
-//   info: {
-//     justifyContent: 'center',
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//     gap: 10,
-//   },
-//   today: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//   },
-//   hour: {
-//     fontSize: 24,
-//   },
-//   temp: {
-//     fontSize: 128,
-//     marginTop: 20,
-//   },
-//   description: {
-//     fontSize: 24,
-//     marginTop: -15,
-//   },
-//   tinyText: {
-//     fontSize: 14,
-//   },
-//   forcast: {
-//     marginTop: 30,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-// });
-
-type IconType<G extends string> = {
-  [key: string]: G;
-};
-
-type G = 'cloudy' | 'day-sunny' | 'rain' | 'snow';
-
-const icons: IconType<G> = {
-  Clouds: 'cloudy',
-  Clear: 'day-sunny',
-  Rain: 'rain',
-  Snow: 'snow',
-};
-
 const App = () => {
   const [city, setCity] = useState<cityInfoType | null>(cityInfo);
   const [location, setLocation] = useState(locationInfo);
@@ -367,6 +289,26 @@ const App = () => {
     })();
   }, []);
 
+  const [isOne, setIsOne] = useState<boolean>(true);
+  const [isTwo, setIsTwo] = useState<boolean>(true);
+  const [isThree, setIsThree] = useState<boolean>(true);
+
+  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetY = e.nativeEvent.contentOffset.y;
+
+    console.log(offsetY);
+
+    if (offsetY < 30) {
+      setIsOne(true);
+      setIsTwo(true);
+      setIsThree(true);
+    } else {
+      setIsOne(false);
+      setIsTwo(false);
+      setIsThree(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <ImageBackground
@@ -374,117 +316,85 @@ const App = () => {
         resizeMode="cover"
         style={styles.bg}
       >
-        <ScrollView style={styles.main}>
-          <View style={styles.city}>
+        <View style={styles.main}>
+          <Animated.View style={styles.city}>
             <Text style={styles.position}>나의 위치</Text>
             <Text style={styles.cityName}>수원시</Text>
-            <Text style={styles.temp}>13°</Text>
-            <Text style={styles.desc}>체감 온도:13°</Text>
+            {!isOne || !isTwo || !isThree ? (
+              <Text style={styles.desc}>13° | 체감 온도:13°</Text>
+            ) : null}
+            {isOne ? <Text style={styles.temp}>13°</Text> : null}
+            {isTwo ? <Text style={styles.desc}>체감 온도:13°</Text> : null}
 
-            <View style={styles.temp_opt}>
-              <Text style={styles.temp_high}>최고:13°</Text>
-              <Text style={styles.temp_low}>최저:13°</Text>
+            {isThree ? (
+              <View style={styles.temp_opt}>
+                <Text style={styles.temp_high}>최고:13°</Text>
+                <Text style={styles.temp_low}>최저:13°</Text>
+              </View>
+            ) : null}
+          </Animated.View>
+
+          <ScrollView
+            contentContainerStyle={{ marginTop: 50 }}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+          >
+            <View style={styles.hourly}>
+              <View style={styles.hourly_desc_wrap}>
+                <Text style={styles.hourly_desc}>
+                  설명설명설명설명설명설명설명설명설명설명설명설명
+                  설명설명설명설명설명설명설명설명설명설명설명설명
+                </Text>
+              </View>
+
+              <View style={{ marginLeft: -10 }}>
+                <ScrollView
+                  contentContainerStyle={styles.hourly_flat_scroll}
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                >
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
+                    <View style={styles.hourly_flexbox}>
+                      <Text style={styles.hourly_time}>오후 10시</Text>
+                      <Image
+                        style={styles.hourly_icon}
+                        source={require('../../assets/images/icon.png')}
+                      />
+                      <Text style={styles.hourly_temp}>13°</Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
             </View>
-          </View>
 
-          <View style={styles.hourly}>
-            <View style={styles.hourly_desc_wrap}>
-              <Text style={styles.hourly_desc}>
-                설명설명설명설명설명설명설명설명설명설명설명설명
-                설명설명설명설명설명설명설명설명설명설명설명설명
-              </Text>
-            </View>
+            <View style={styles.daily}>
+              <View style={styles.daily_forcast}>
+                <Image
+                  style={styles.daily_forcast_icon}
+                  source={require('../../assets/images/icon.png')}
+                />
+                <Text style={styles.daily_forcast_title}>
+                  10일간의 일기예보
+                </Text>
+              </View>
 
-            <View style={{ marginLeft: -10 }}>
-              <ScrollView
-                contentContainerStyle={styles.hourly_flat_scroll}
-                showsHorizontalScrollIndicator={false}
-                horizontal
-              >
+              <View>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
-                  <View style={styles.hourly_flexbox}>
-                    <Text style={styles.hourly_time}>오후 10시</Text>
+                  <View style={styles.daily_flexbox}>
+                    <Text style={styles.daily_day}>요일</Text>
                     <Image
-                      style={styles.hourly_icon}
+                      style={styles.daily_icon}
                       source={require('../../assets/images/icon.png')}
                     />
-                    <Text style={styles.hourly_temp}>13°</Text>
+                    <Text style={styles.daily_low}>13°</Text>
+                    <Text style={styles.daily_high}>13°</Text>
                   </View>
                 ))}
-              </ScrollView>
-            </View>
-          </View>
-
-          <View style={styles.daily}>
-            <View style={styles.daily_forcast}>
-              <Image
-                style={styles.daily_forcast_icon}
-                source={require('../../assets/images/icon.png')}
-              />
-              <Text style={styles.daily_forcast_title}>10일간의 일기예보</Text>
-            </View>
-
-            <View>
-              {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
-                <View style={styles.daily_flexbox}>
-                  <Text style={styles.daily_day}>요일</Text>
-                  <Image
-                    style={styles.daily_icon}
-                    source={require('../../assets/images/icon.png')}
-                  />
-                  <Text style={styles.daily_low}>13°</Text>
-                  <Text style={styles.daily_high}>13°</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-      </ImageBackground>
-
-      {/* <View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            horizontal
-            contentContainerStyle={styles.weather}
-          >
-            {lists.length === 0 ? (
-              <View style={styles.day}>
-                <ActivityIndicator color="white" size="large" />
               </View>
-            ) : (
-              lists.map((list, index) => (
-                <View key={index} style={styles.day}>
-                  <View style={styles.info}>
-                    <Text style={styles.today}>
-                      {list.dt_txt.split(' ')[0]}
-                    </Text>
-
-                    <Text style={styles.hour}>
-                      {list.dt_txt.split(' ')[1].slice(0, 5)}
-                    </Text>
-                  </View>
-
-                  <View style={styles.forcast}>
-                    <Text style={styles.temp}>
-                      {Math.round(list.main.temp)}
-                    </Text>
-                    <Fontisto
-                      name={icons[list.weather[0].main]}
-                      size={68}
-                      color="black"
-                    />
-                  </View>
-
-                  <Text style={styles.description}>{list.weather[0].main}</Text>
-                  <Text style={styles.tinyText}>
-                    {list.weather[0].description}
-                  </Text>
-                </View>
-              ))
-            )}
+            </View>
           </ScrollView>
-        </View> */}
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
