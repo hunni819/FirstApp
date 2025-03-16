@@ -93,6 +93,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.9,
+    borderRadius: 15,
+    borderCurve: 'continuous',
   },
   cityName: {
     marginTop: 2,
@@ -134,6 +136,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#111',
     opacity: 0.9,
+    borderRadius: 15,
+    borderCurve: 'continuous',
   },
   hourly_desc_wrap: {
     paddingVertical: 10,
@@ -156,9 +160,65 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingLeft: 10,
   },
+  hourly_time: {
+    color: 'white',
+    fontWeight: '600',
+  },
   hourly_icon: {
     width: 40,
     height: 40,
+  },
+  hourly_temp: {
+    color: 'white',
+    fontSize: 18,
+  },
+  daily: {
+    marginTop: 20,
+    paddingHorizontal: 15,
+    flex: 1,
+    backgroundColor: '#111',
+    opacity: 0.9,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+  },
+  daily_forcast: {
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  daily_forcast_icon: {
+    width: 15,
+    height: 15,
+  },
+  daily_forcast_title: {
+    color: 'white',
+    fontSize: 12,
+  },
+  daily_icon: {
+    width: 30,
+    height: 30,
+  },
+  daily_flexbox: {
+    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderColor: '#2E2E2E',
+  },
+  daily_day: {
+    color: 'white',
+    fontSize: 18,
+  },
+  daily_low: {
+    color: 'white',
+    fontSize: 18,
+    opacity: 0.6,
+  },
+  daily_high: {
+    color: 'white',
+    fontSize: 18,
   },
 });
 
@@ -343,15 +403,39 @@ const App = () => {
               >
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
                   <View style={styles.hourly_flexbox}>
-                    <Text style={{ color: 'white' }}>오후 10시</Text>
+                    <Text style={styles.hourly_time}>오후 10시</Text>
                     <Image
                       style={styles.hourly_icon}
                       source={require('../../assets/images/icon.png')}
                     />
-                    <Text style={{ color: 'white' }}>13°</Text>
+                    <Text style={styles.hourly_temp}>13°</Text>
                   </View>
                 ))}
               </ScrollView>
+            </View>
+          </View>
+
+          <View style={styles.daily}>
+            <View style={styles.daily_forcast}>
+              <Image
+                style={styles.daily_forcast_icon}
+                source={require('../../assets/images/icon.png')}
+              />
+              <Text style={styles.daily_forcast_title}>10일간의 일기예보</Text>
+            </View>
+
+            <View>
+              {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
+                <View style={styles.daily_flexbox}>
+                  <Text style={styles.daily_day}>요일</Text>
+                  <Image
+                    style={styles.daily_icon}
+                    source={require('../../assets/images/icon.png')}
+                  />
+                  <Text style={styles.daily_low}>13°</Text>
+                  <Text style={styles.daily_high}>13°</Text>
+                </View>
+              ))}
             </View>
           </View>
         </ScrollView>
