@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Linking,
-  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   ImageBackground,
@@ -12,134 +11,35 @@ import {
   Pressable,
   Modal,
   Button,
+  PanResponder,
+  Animated,
 } from 'react-native';
 
-import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
-import { locationInfo } from '../types/location';
-import { WeekperWeather } from '../apis/weather';
+import { useRef, useState } from 'react';
 import ColorList from '../components/ColorList';
 
-type cityInfoType = {
-  city: string | null;
-  district: string | null;
-};
-
-const cityInfo: cityInfoType = {
-  city: '...Loading',
-  district: '...Loading',
-};
-
-type listType = {
-  dt: number;
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    sea_level: number;
-    grnd_level: number;
-    humidity: number;
-    temp_kf: number;
-  };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    },
-  ];
-  clouds: {
-    all: number;
-  };
-  wind: {
-    speed: number;
-    deg: number;
-    gust: number;
-  };
-  visibility: number;
-  pop: number;
-  rain: {
-    [key: string]: number;
-  };
-  sys: {
-    [key: string]: string;
-  };
-  dt_txt: string;
-};
-
 const App = () => {
-  const [city, setCity] = useState<cityInfoType | null>(cityInfo);
-  const [location, setLocation] = useState(locationInfo);
-  const [ok, setOk] = useState<boolean>(true);
-  const [lists, setLists] = useState<listType[]>([]);
-
-  const getWeather = async () => {
-    try {
-      await permissionLocation();
-
-      const {
-        coords: { latitude, longitude },
-      } = await Location.getCurrentPositionAsync({ accuracy: 6 });
-
-      if (!latitude && !longitude)
-        throw new Error('위치 정보를 불러오지 못했어요');
-
-      setLocation({ lat: latitude, lng: longitude });
-
-      // reverse Geocoding : 지리적 좌표로 설명된 위치를 사람이 읽을 수 있는 주소 또는 장소 이름으로 변환하는 프로세스
-      const location = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
-
-      if (!location) throw new Error('상세 위치 정보를 불러오지 못했어요');
-
-      setCity({ city: location[0].city, district: location[0].district });
-
-      const { list } = await WeekperWeather({ lat: latitude, lng: longitude });
-      setLists(list);
-    } catch (e) {
-      if (e instanceof Error) console.error(e.message);
-    }
-  };
-
-  const permissionLocation = async () => {
-    let { granted } = await Location.requestForegroundPermissionsAsync();
-
-    if (!granted) {
-      setOk(false);
-      throw new Error('위치 권한을 허용해주세요');
-    }
-  };
-
-  const reAsk = async () => {
-    if (!ok) {
-      openSettings();
-      return;
-    }
-  };
-
-  const openSettings = () => {
-    Linking.openSettings();
-  };
-
-  useEffect(() => {
-    getWeather();
-
-    (async () => {
-      if (ok) {
-        await reAsk();
-      }
-    })();
-  }, []);
-
   const [isModalVisable, setisModalVisable] = useState<boolean>(false);
+
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }]),
+      onPanResponderRelease: () => {
+        Animated.timing(pan, {
+          toValue: { x: 0, y: 0 },
+          duration: 1000,
+          useNativeDriver: false,
+        }).start();
+      },
+    })
+  ).current;
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <Modal
         visible={isModalVisable}
         onRequestClose={() => setisModalVisable(false)}
@@ -154,14 +54,20 @@ const App = () => {
           <ColorList color="#e2e2e2" />
         </View>
       </Modal>
-      <StatusBar barStyle="light-content" />
+
       <ImageBackground
         source={require('../../assets/images/day-sunny.jpg')}
         resizeMode="cover"
         style={styles.bg}
       >
         <SafeAreaView style={styles.safe_area}>
-          <View style={styles.main}>
+          <Animated.View
+            style={{
+              ...styles.main,
+              transform: [{ translateX: pan.x }, { translateY: pan.y }],
+            }}
+            {...panResponder.panHandlers}
+          >
             <View style={styles.city}>
               <Text style={styles.position}>나의 위치</Text>
               <Text style={styles.cityName}>수원시</Text>
@@ -178,7 +84,7 @@ const App = () => {
             </View>
 
             <ScrollView
-              contentContainerStyle={{ marginTop: 50 }}
+              contentContainerStyle={{ marginTop: 20 }}
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.hourly}>
@@ -239,7 +145,7 @@ const App = () => {
                 </View>
               </View>
             </ScrollView>
-          </View>
+          </Animated.View>
         </SafeAreaView>
       </ImageBackground>
     </View>
@@ -264,14 +170,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     backgroundColor: '#000',
-    opacity: 0.8,
   },
   city: {
     paddingVertical: 20,
     backgroundColor: '#111',
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.9,
     borderRadius: 15,
     borderCurve: 'continuous',
   },
@@ -314,7 +218,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flex: 1,
     backgroundColor: '#111',
-    opacity: 0.9,
     borderRadius: 15,
     borderCurve: 'continuous',
   },
@@ -356,7 +259,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flex: 1,
     backgroundColor: '#111',
-    opacity: 0.9,
     borderRadius: 15,
     borderCurve: 'continuous',
   },
