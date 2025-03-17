@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Linking,
   SafeAreaView,
   StatusBar,
   ImageBackground,
@@ -11,31 +10,13 @@ import {
   Pressable,
   Modal,
   Button,
-  PanResponder,
-  Animated,
 } from 'react-native';
 
-import { useRef, useState } from 'react';
-import ColorList from '../components/ColorList';
+import { useState } from 'react';
+import ColorList from './components/ColorList';
 
 const App = () => {
   const [isModalVisable, setisModalVisable] = useState<boolean>(false);
-
-  const pan = useRef(new Animated.ValueXY()).current;
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }]),
-      onPanResponderRelease: () => {
-        Animated.timing(pan, {
-          toValue: { x: 0, y: 0 },
-          duration: 1000,
-          useNativeDriver: false,
-        }).start();
-      },
-    })
-  ).current;
 
   return (
     <View style={styles.container}>
@@ -56,43 +37,36 @@ const App = () => {
       </Modal>
 
       <ImageBackground
-        source={require('../../assets/images/day-sunny.jpg')}
+        source={require('../assets/images/day-sunny.jpg')}
         resizeMode="cover"
         style={styles.bg}
       >
         <SafeAreaView style={styles.safe_area}>
-          <Animated.View
-            style={{
-              ...styles.main,
-              transform: [{ translateX: pan.x }, { translateY: pan.y }],
-            }}
-            {...panResponder.panHandlers}
-          >
-            <View style={styles.city}>
-              <Text style={styles.position}>나의 위치</Text>
-              <Text style={styles.cityName}>수원시</Text>
-
-              <Text style={styles.desc}>13° | 체감 온도:13°</Text>
-
-              <Text style={styles.temp}>13°</Text>
-              <Text style={styles.desc}>체감 온도:13°</Text>
-
-              <View style={styles.temp_opt}>
-                <Text style={styles.temp_high}>최고:13°</Text>
-                <Text style={styles.temp_low}>최저:13°</Text>
-              </View>
-            </View>
-
+          <View style={styles.main}>
             <ScrollView
-              contentContainerStyle={{ marginTop: 20 }}
+              contentContainerStyle={{
+                marginTop: 20,
+              }}
               showsVerticalScrollIndicator={false}
             >
+              <View style={styles.city}>
+                <Text style={styles.position}>나의 위치</Text>
+                <Text style={styles.cityName}>수원시</Text>
+
+                <Text style={styles.desc}>13° | 체감 온도:13°</Text>
+
+                <Text style={styles.temp}>13°</Text>
+                <Text style={styles.desc}>체감 온도:13°</Text>
+
+                <View style={styles.temp_opt}>
+                  <Text style={styles.temp_high}>최고:13°</Text>
+                  <Text style={styles.temp_low}>최저:13°</Text>
+                </View>
+              </View>
+
               <View style={styles.hourly}>
                 <View style={styles.hourly_desc_wrap}>
-                  <Text style={styles.hourly_desc}>
-                    설명설명설명설명설명설명설명설명설명설명설명설명
-                    설명설명설명설명설명설명설명설명설명설명설명설명
-                  </Text>
+                  <Text style={styles.hourly_desc}>description</Text>
                 </View>
 
                 <View style={{ marginLeft: -10 }}>
@@ -101,18 +75,23 @@ const App = () => {
                     showsHorizontalScrollIndicator={false}
                     horizontal
                   >
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
-                      <Pressable onPress={() => setisModalVisable(true)}>
-                        <View style={styles.hourly_flexbox}>
-                          <Text style={styles.hourly_time}>오후 10시</Text>
-                          <Image
-                            style={styles.hourly_icon}
-                            source={require('../../assets/images/icon.png')}
-                          />
-                          <Text style={styles.hourly_temp}>13°</Text>
-                        </View>
-                      </Pressable>
-                    ))}
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                      (_, index) => (
+                        <Pressable
+                          key={index}
+                          onPress={() => setisModalVisable(true)}
+                        >
+                          <View style={styles.hourly_flexbox}>
+                            <Text style={styles.hourly_time}>오후 10시</Text>
+                            <Image
+                              style={styles.hourly_icon}
+                              source={require('../assets/images/icon.png')}
+                            />
+                            <Text style={styles.hourly_temp}>13°</Text>
+                          </View>
+                        </Pressable>
+                      )
+                    )}
                   </ScrollView>
                 </View>
               </View>
@@ -121,7 +100,7 @@ const App = () => {
                 <View style={styles.daily_forcast}>
                   <Image
                     style={styles.daily_forcast_icon}
-                    source={require('../../assets/images/icon.png')}
+                    source={require('../assets/images/icon.png')}
                   />
                   <Text style={styles.daily_forcast_title}>
                     10일간의 일기예보
@@ -129,23 +108,28 @@ const App = () => {
                 </View>
 
                 <View>
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
-                    <Pressable onPress={() => setisModalVisable(true)}>
-                      <View style={styles.daily_flexbox}>
-                        <Text style={styles.daily_day}>요일</Text>
-                        <Image
-                          style={styles.daily_icon}
-                          source={require('../../assets/images/icon.png')}
-                        />
-                        <Text style={styles.daily_low}>13°</Text>
-                        <Text style={styles.daily_high}>13°</Text>
-                      </View>
-                    </Pressable>
-                  ))}
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                    (_, index) => (
+                      <Pressable
+                        key={index}
+                        onPress={() => setisModalVisable(true)}
+                      >
+                        <View style={styles.daily_flexbox}>
+                          <Text style={styles.daily_day}>요일</Text>
+                          <Image
+                            style={styles.daily_icon}
+                            source={require('../assets/images/icon.png')}
+                          />
+                          <Text style={styles.daily_low}>13°</Text>
+                          <Text style={styles.daily_high}>13°</Text>
+                        </View>
+                      </Pressable>
+                    )
+                  )}
                 </View>
               </View>
             </ScrollView>
-          </Animated.View>
+          </View>
         </SafeAreaView>
       </ImageBackground>
     </View>

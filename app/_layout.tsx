@@ -5,7 +5,7 @@ const RootLayout = () => {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="+not-found" options={{ title: 'not-found' }} />
-        <Stack.Screen name="(tabs)" options={{ title: 'tab' }} />
+        <Stack.Screen name="index" options={{ title: 'index' }} />
       </Stack>
     </>
   );
